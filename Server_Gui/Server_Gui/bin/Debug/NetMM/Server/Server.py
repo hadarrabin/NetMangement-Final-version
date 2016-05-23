@@ -210,9 +210,10 @@ class server():
         self.ServerSocket.listen(5)
         while True:
             client_socket, client_address = self.ServerSocket.accept()
-            s = threading.Thread(target=self.SessionWithClient, args=(client_socket,))
+            cs = threading.Thread(target=self.SessionWithClient, args=(client_socket,))
             self.client_Ips[client_socket] = str(client_address[0])
-            s.start()
+            cs.start()
+            time.sleep(7)
             if self.IF_CLIENT_NOT_CONNECTED:
                 self.IF_CLIENT_NOT_CONNECTED = False
                 c = threading.Thread(target=self.Continues, args=(path,))
