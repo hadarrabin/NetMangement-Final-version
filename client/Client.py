@@ -11,7 +11,7 @@ import pickle
 
 
 # region ----------   CONSTANTS   ---------------------------------------------------------------
-SERVER_ADDRESS = Config.IP  # The default target server ip
+SERVER_ADDRESS = "127.0.0.1"  # The default target server ip
 SERVER_PORT = 5070  # The default target server port
 LEN_UNIT_BUF = 2048  # Min len of buffer for recieve from server socket
 MAX_RSA_MSG = 128  # Maximum length of message encrypted in RSA module (pyCrypto limitation)
@@ -34,13 +34,14 @@ class client:
         self.syst.run()
         self.cp = system.CPU(self.monitorc)
 
+
     def key_exchange(self):
         # --------------------  1 ------------------------------------------------------------------------
         # --------------  Wait server Public_Key --------------------------------------------------------
         # get Pickled public key
         pickled_server_public_key = self.socket.recv(LEN_UNIT_BUF).split(END_LINE)[0]
         server_public_key = pickle.loads(pickled_server_public_key)
-        # --------------  Wait server hash Public_Key ---------------------------------------------------------------------------
+        # --------------  Wait server hash Public_Key ----------------------------------------------------
         # Hashing original Public_Key
         calculated_hash_server_pickled_public_key = SHA256.new(pickle.dumps(server_public_key)).hexdigest()
         declared_hash_server_pickled_public_key = b64decode(self.socket.recv(LEN_UNIT_BUF).split(END_LINE)[0])
@@ -62,7 +63,7 @@ class client:
             hash_sym_key = SHA256.new(self.key).hexdigest()
             print str(hash_sym_key)
             pickle_encrypt_hash_sym_key = pickle.dumps(self.crypto.private_key.publickey().encrypt(hash_sym_key, 32))
-            message = b64encode(self.key) + "#" + b64encode(pickle_encrypt_hash_sym_key)
+            message = b64encode(self.key) + "#" + b64encode(pickle_encrypt_hash_sym_key) + "#" + "Message"
             print message
             splitted_pickled_message = [message[i:i + MAX_ENCRYPTED_MSG_SIZE] for i in
                                         xrange(0, len(message), MAX_ENCRYPTED_MSG_SIZE)]
@@ -75,7 +76,6 @@ class client:
                 self.socket.send(pickled_part_encrypted_pickled_message + END_LINE)
                 pickled_encrypted_message += pickled_part_encrypted_pickled_message
                 time.sleep(0.5)
-            print "finished key exchange"
 
     def send(self, data):
         encrypted_data = self.Aesob.encrypt_data(data)
@@ -104,16 +104,35 @@ class client:
                 i = i + 1
                 print i
                 itemm = str(item)
-                self.send(itemm)
+                self.send("PID:"+itemm)
                 namem = str(processes[item][0])
-                self.send(namem)
+                self.send("Name:"+namem)
                 usingm = str(processes[item][2])
-                self.send(usingm)
+                self.send("Usage:"+usingm)
             print "finished"
-            cpusin = str(self.cp.cpu_utilization())
-            self.send(cpusin)
         if (st == "Get Total Using"):
             self.send(str(self.cp.cpu_utilization()))
+        if (st == "Get Open Windows"):
+            titles = self.syst.get_windows()
+            lennn = len(titles)
+            windows = {}
+            for i in range(len(titles)):
+                if((titles[i] != None) and (len(titles[i]))>0):
+                    try:
+                        windows[i] = str(titles[i])
+                    except:
+                        pass
+            self.send(str(len(windows)))
+            for i in range(len(titles)):
+                if((titles[i] != None) and (len(titles[i]))>0):
+                    try:
+                        self.send(str(windows[i]))
+                        time.sleep(0.2)
+                    except:
+                        pass
+        if (st[:12] == "Kill Process"):
+            self.syst.KillProcess(int(st[13:]))
+
 
     def continues(self):
         while True:

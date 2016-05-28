@@ -110,6 +110,9 @@ class System:
         self.os_version = self.get_os_version()
         self.UUID = self.get_computer_UUID()
         self.user_name = win32api.GetUserName()
+        self.PROCESS_TERMINATE = 1    # OpenProcess mode that allows process termination
+        self.g_CurrentProcessId = win32api.GetCurrentProcessId()    # PID of the python process it will run on
+
 
     def get_user_name(self):
         """
@@ -196,24 +199,21 @@ class System:
         :return: title (list)
         """
 
-        EnumWindows = ctypes.windll.user32.EnumWindows  # Filters all opened windows
-        EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.POINTER(ctypes.c_int),
-                                             ctypes.POINTER(ctypes.c_int))  # Callback function. Returns a tuple
-        GetWindowText = ctypes.windll.user32.GetWindowTextW  # Get all the window's title
-        GetWindowTextLength = ctypes.windll.user32.GetWindowTextLengthW  # Gets the exact buffer size of the title
-        IsWindowVisible = ctypes.windll.user32.IsWindowVisible  # Filters all the visible windows
+        EnumWindows = ctypes.windll.user32.EnumWindows
+        EnumWindowsProc = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int))
+        GetWindowText = ctypes.windll.user32.GetWindowTextW
+        GetWindowTextLength = ctypes.windll.user32.GetWindowTextLengthW
+        IsWindowVisible = ctypes.windll.user32.IsWindowVisible
 
         titles = []
-
-        def foreach_window(hwnd):
+        def foreach_window(hwnd, lParam):
             if IsWindowVisible(hwnd):
                 length = GetWindowTextLength(hwnd)
                 buff = ctypes.create_unicode_buffer(length + 1)
                 GetWindowText(hwnd, buff, length + 1)
                 titles.append(buff.value)
             return True
-
-        EnumWindows(EnumWindowsProc(foreach_window), 0)  # Callback
+        EnumWindows(EnumWindowsProc(foreach_window), 0)
         return titles
 
     def create_process_handle_dict(self, procsses):
@@ -245,6 +245,23 @@ class System:
         """
         for proces in processes:
             processes[proces].append(cpu.cpu_process_util(processes[proces][1]))
+
+
+    def KillProcess(self,PID):
+        """
+        Kills a process by given Process ID.
+        :return: Error description if command failed, 'Success' otherwise.
+        """
+        if PID == self.g_CurrentProcessId:
+            return 'Error: attempted to kill client process.'
+        try:
+            handle = win32api.OpenProcess(self.PROCESS_TERMINATE, False, PID)
+            win32api.TerminateProcess(handle, -1)
+            win32api.CloseHandle(handle)
+            return 'Success.'
+        except Exception as e:
+            return 'Exception occurred: ' + str(e)
+
 
     def run(self):
         """

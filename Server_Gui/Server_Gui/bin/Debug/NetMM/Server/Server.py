@@ -75,7 +75,9 @@ class server():
             # --------------  Wait client hash private key  ---------------------------------------------------------------------------
             # Hashing original  client private key
             calculated_hash_client_pickled_private_key = SHA256.new(pickle.dumps(client_private_key)).hexdigest()
-            declared_hash_client_pickled_private_key = b64decode(client_socket.recv(LEN_UNIT_BUF).split(END_LINE)[0])
+            data = client_socket.recv(LEN_UNIT_BUF).split(END_LINE)[0]
+            print '1111111111111    ', data
+            declared_hash_client_pickled_private_key = b64decode(data)
             if calculated_hash_client_pickled_private_key != declared_hash_client_pickled_private_key:
                 print "Error : hash and original"
                 return
@@ -150,6 +152,7 @@ class server():
         RAM_size = self.recvFclient(csocket)
         disk_C_size = self.recvFclient(csocket)
         print "finished receiving"
+        time.sleep(1.5)
         self.writeTGui("New client arrives")
         self.writeTGui(Ip)
         self.writeTGui(Ip + ":UUID:" + UUID)
@@ -170,15 +173,27 @@ class server():
             Ip = commend[:Ipindex]
             commandd = commend[Ipindex+1:]
             print commandd
+
+
             csocket = None
             for s in self.client_Ips.keys():
                 if self.client_Ips[s] == Ip:
                     csocket = s
             if csocket == None:
                 sockbool = False
+            boo = True
             if sockbool == True:
-                w = threading.Thread(target=self.work, args=(csocket,commandd))
-                w.start()
+                try:
+                    dotsind = commandd.find(":")
+                    if dotsind > 0:
+                        kil = commandd[:dotsind]
+                        if(kil == "Kill Process"):
+                            self.sendTclient(csocket,commandd)
+                            boo = False
+                except:
+                    pass
+            if boo:
+                self.work(csocket,commandd)
                 # commend will be sent to a class the will translate it to a command for the client
 
     def work(self, csocket, command):
@@ -194,15 +209,26 @@ class server():
         if command == "Get Process List":
             self.sendTclient(csocket, command)
             lengf = self.recvFclient(csocket)
+            self.writeTGui(Ip + ":"+lengf)
             x = int(lengf)
             for i in range(x):
+                print str(i)
                 PId = self.recvFclient(csocket)
                 Namee = self.recvFclient(csocket)
                 Usingg = self.recvFclient(csocket)
-                # self.dbconn.execute(
+                s = Ip+":"+PId+";"+Namee+";"+Usingg
+                self.writeTGui(s)
+                print (s)
+                    # self.dbconn.execute(
                 #     """INSERT INTO Process_Table(PID ,Pname,Using) VALUES ('%s', '%s', '%s')""" % (PId, Namee, Usingg))
                 # self.dbconn.commit()
-                print ("Process PID: %s, Name: %s, Usage: %s" %(PId,Namee,Usingg))
+        if command == "Get Open Windows":
+            self.sendTclient(csocket,command)
+            lens = self.recvFclient(csocket)
+            self.writeTGui(Ip+":"+lens)
+            leni = int(lens)
+            for i in range(leni):
+                self.writeTGui(Ip + ":"+ self.recvFclient(csocket))
 
     def start(self,path):
         self.ConnectToGui()

@@ -44,10 +44,17 @@ namespace Server_Gui
             this.button2 = new System.Windows.Forms.Button();
             this.Clients = new System.Windows.Forms.ListBox();
             this.processes = new System.Windows.Forms.DataGridView();
+            this.PID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Usage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Close = new System.Windows.Forms.DataGridViewButtonColumn();
             this.computersBasicDDataSet = new Server_Gui.ComputersBasicDDataSet();
             this.AddClientB = new System.Windows.Forms.Button();
             this.TUsingBox = new System.Windows.Forms.TextBox();
             this.UsageSettings = new System.Windows.Forms.DomainUpDown();
+            this.GetWinBut = new System.Windows.Forms.Button();
+            this.openwindows = new System.Windows.Forms.ListBox();
+            this.getusageT = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.processes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.computersBasicDDataSet)).BeginInit();
@@ -55,7 +62,7 @@ namespace Server_Gui
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 305);
+            this.textBox1.Location = new System.Drawing.Point(15, 305);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(217, 103);
@@ -140,7 +147,7 @@ namespace Server_Gui
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.button1.Location = new System.Drawing.Point(12, 217);
+            this.button1.Location = new System.Drawing.Point(15, 217);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(109, 43);
             this.button1.TabIndex = 10;
@@ -151,7 +158,7 @@ namespace Server_Gui
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.button2.Location = new System.Drawing.Point(643, 256);
+            this.button2.Location = new System.Drawing.Point(619, 25);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(112, 51);
             this.button2.TabIndex = 11;
@@ -175,12 +182,46 @@ namespace Server_Gui
             // processes
             // 
             this.processes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.processes.Location = new System.Drawing.Point(413, 13);
+            this.processes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.PID,
+            this.Name,
+            this.Usage,
+            this.Close});
+            this.processes.Location = new System.Drawing.Point(239, 143);
             this.processes.MultiSelect = false;
             this.processes.Name = "processes";
             this.processes.ReadOnly = true;
-            this.processes.Size = new System.Drawing.Size(342, 221);
+            this.processes.Size = new System.Drawing.Size(367, 265);
             this.processes.TabIndex = 13;
+            this.processes.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.processes_CellContentClick);
+            // 
+            // PID
+            // 
+            this.PID.HeaderText = "PID";
+            this.PID.Name = "PID";
+            this.PID.ReadOnly = true;
+            this.PID.Width = 50;
+            // 
+            // Name
+            // 
+            this.Name.HeaderText = "Name";
+            this.Name.Name = "Name";
+            this.Name.ReadOnly = true;
+            this.Name.Width = 150;
+            // 
+            // Usage
+            // 
+            this.Usage.HeaderText = "Usage";
+            this.Usage.Name = "Usage";
+            this.Usage.ReadOnly = true;
+            this.Usage.Width = 50;
+            // 
+            // Close
+            // 
+            this.Close.HeaderText = "Terminate";
+            this.Close.Name = "Close";
+            this.Close.ReadOnly = true;
+            this.Close.Width = 55;
             // 
             // computersBasicDDataSet
             // 
@@ -190,7 +231,7 @@ namespace Server_Gui
             // AddClientB
             // 
             this.AddClientB.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.AddClientB.Location = new System.Drawing.Point(119, 217);
+            this.AddClientB.Location = new System.Drawing.Point(108, 218);
             this.AddClientB.Name = "AddClientB";
             this.AddClientB.Size = new System.Drawing.Size(110, 43);
             this.AddClientB.TabIndex = 14;
@@ -202,7 +243,7 @@ namespace Server_Gui
             // TUsingBox
             // 
             this.TUsingBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
-            this.TUsingBox.Location = new System.Drawing.Point(532, 256);
+            this.TUsingBox.Location = new System.Drawing.Point(505, 25);
             this.TUsingBox.Multiline = true;
             this.TUsingBox.Name = "TUsingBox";
             this.TUsingBox.Size = new System.Drawing.Size(92, 35);
@@ -311,18 +352,50 @@ namespace Server_Gui
             this.UsageSettings.Items.Add("97");
             this.UsageSettings.Items.Add("98");
             this.UsageSettings.Items.Add("99");
-            this.UsageSettings.Location = new System.Drawing.Point(253, 135);
+            this.UsageSettings.Location = new System.Drawing.Point(379, 25);
             this.UsageSettings.Name = "UsageSettings";
             this.UsageSettings.Size = new System.Drawing.Size(120, 20);
             this.UsageSettings.TabIndex = 16;
             this.UsageSettings.Text = "Usage Limit";
             this.UsageSettings.SelectedItemChanged += new System.EventHandler(this.UsageSettings_SelectedItemChanged);
             // 
+            // GetWinBut
+            // 
+            this.GetWinBut.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(177)));
+            this.GetWinBut.Location = new System.Drawing.Point(753, 25);
+            this.GetWinBut.Name = "GetWinBut";
+            this.GetWinBut.Size = new System.Drawing.Size(88, 51);
+            this.GetWinBut.TabIndex = 18;
+            this.GetWinBut.Text = "Get Open Windows";
+            this.GetWinBut.UseVisualStyleBackColor = true;
+            this.GetWinBut.Click += new System.EventHandler(this.GetWinBut_Click);
+            // 
+            // openwindows
+            // 
+            this.openwindows.FormattingEnabled = true;
+            this.openwindows.Location = new System.Drawing.Point(635, 143);
+            this.openwindows.Name = "openwindows";
+            this.openwindows.Size = new System.Drawing.Size(147, 173);
+            this.openwindows.TabIndex = 19;
+            // 
+            // getusageT
+            // 
+            this.getusageT.Location = new System.Drawing.Point(505, 67);
+            this.getusageT.Name = "getusageT";
+            this.getusageT.Size = new System.Drawing.Size(92, 33);
+            this.getusageT.TabIndex = 20;
+            this.getusageT.Text = "get total usage";
+            this.getusageT.UseVisualStyleBackColor = true;
+            this.getusageT.Click += new System.EventHandler(this.getusageT_Click);
+            // 
             // ServerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(767, 420);
+            this.ClientSize = new System.Drawing.Size(868, 426);
+            this.Controls.Add(this.getusageT);
+            this.Controls.Add(this.openwindows);
+            this.Controls.Add(this.GetWinBut);
             this.Controls.Add(this.UsageSettings);
             this.Controls.Add(this.TUsingBox);
             this.Controls.Add(this.AddClientB);
@@ -333,7 +406,6 @@ namespace Server_Gui
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.textBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "ServerForm";
             this.Text = "Server Form";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.flowLayoutPanel1.ResumeLayout(false);
@@ -367,6 +439,13 @@ namespace Server_Gui
         private System.Windows.Forms.DataGridViewTextBoxColumn usingDataGridViewTextBoxColumn;
         public System.Windows.Forms.DomainUpDown UsageSettings;
         private ComputersBasicDDataSet computersBasicDDataSet;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Name;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Usage;
+        private System.Windows.Forms.DataGridViewButtonColumn Close;
+        private System.Windows.Forms.Button GetWinBut;
+        public System.Windows.Forms.ListBox openwindows;
+        private System.Windows.Forms.Button getusageT;
     }
 }
 

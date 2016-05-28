@@ -26,13 +26,16 @@ namespace Server_Gui
         //BinaryReader br;
         //BinaryWriter bw;
         ComputersBasicDDataSet computersBasicDDataSet;
+        /// <summary>
+        ///  this function establishes the connection with the python server engine
+        /// </summary>
         public Communicator(ServerForm Form)
         {
-            // creates SQL DB and create connection.
             this.Form_1 = Form;
             this.computersBasicDDataSet = new ComputersBasicDDataSet();
             try
             {
+                //creates a socket connection
                 this.bytes = new Byte[2048];
                 IPAddress ipAddress = IPAddress.Any;
                 IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11555);
@@ -41,6 +44,7 @@ namespace Server_Gui
                 listener.Listen(1);
                 //server = new NamedPipeServerStream("myPipee");
                 this.Form_1.textBox1.AppendText(" Waiting for Connection");
+                //creates the python engine
                 this.Form_1.CreatePythonEngine();
                 //server.WaitForConnection();
                 Socket sock = listener.Accept();
@@ -62,6 +66,9 @@ namespace Server_Gui
                 this.Form_1.textBox1.Text = e.ToString();
             }
         }
+        /// <summary>
+        ///  this function reeeds from the server socket connection
+        /// </summary>
         public string Reead()
         {
             //var lenn = (int)this.br.ReadUInt32();            // Read string length
@@ -71,6 +78,9 @@ namespace Server_Gui
             string datad = Encoding.ASCII.GetString(bytes, 0, bytesRec);
             return datad;
         }
+        /// <summary>
+        ///  this function is writes to the connection with the server
+        /// </summary>
         public void Wriite( string str)
         {
         //    this.bw.Write((uint)str.Length);
@@ -127,6 +137,10 @@ namespace Server_Gui
                 }));
             
         }
+        /// <summary>
+        ///  this function is designed to replace each of the data cells values with the correct client ones.
+        ///  it is done by approaching the MS access DB and the basic table in it. it copyes the values to the correct cells.
+        /// </summary>
         public void UpdateBoxes(string Ip)
         {
             System.Data.DataRow copyingvaluesRow = this.computersBasicDDataSet.Basic_Table.Rows.Find(Ip);
@@ -145,14 +159,23 @@ namespace Server_Gui
                this.Form_1.OsBox.Text = Convert.ToString(copyingvaluesRow["OS version"]);
            }));
         }
-        public void UpdateUsingB()
+        public void slep(Object sender,
+                           EventArgs e)
         {
-            //the operation target is to update constantly the Using: box
-            // its done by an infinite thread that requires the Ip from the server
+            System.Threading.Thread.Sleep(1000000000);
+        }
+        /// <summary>
+        ///  the operation target is to update constantly the Using: box
+        //   its done by an infinite thread that requires the Ip from the server
+        /// </summary>
+        public void UpdateUsingTB()
+        {
+           
             while (true)
             {
                 bool ok = true;
-                System.Threading.Thread.Sleep(10000);
+                System.Threading.Thread.Sleep(100000);
+                this.Form_1.button1.Click += new EventHandler(this.slep);
                 this.Wriite(IPC + ":Get Total Using");
                 string info = this.Reead();
                 if (info == "New client arrives")
@@ -188,9 +211,13 @@ namespace Server_Gui
                         }));
                     }
                 }
+
+                this.Form_1.button1.Click += new EventHandler(this.slep);
+
+                }
                 
-            }
         }
+
         public void Execute(string st1)
         {
             if (st1 == "New client arrives")
