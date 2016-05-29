@@ -22,4 +22,5 @@ the easiest way is to open the command line and write the following:
 Another way is to open the Client.py with any python compitable IDE and run the programm.
 
 Before you want to start running the script, make sure you have installed python27 32 bit, compitable version of Crypto package, and pywin32 package.
-Links are attached in this project file, also known: HADAR-Project-file.docs, in the biblography section.
+
+Links are attached in this project file, also known: HADAR-Project-file.docx, in the biblography section.
