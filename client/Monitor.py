@@ -1,3 +1,14 @@
+"""
+##################################################################
+# Created By:  Hadar Rabin                                       #
+# Date: 20/04/2016                                               #
+# Name: monitoring the information recieved due to the system.py #
+# Version: 1.0                                                   #
+# Windows Tested Versions: Win 7 64-bit                          #
+# Python Tested Versions: 2.6 32-bit                             #
+# Python Environment  : PyCharm                                  #
+##################################################################
+"""
 import time
 import multiprocessing
 import Config

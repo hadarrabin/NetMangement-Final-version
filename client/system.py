@@ -1,5 +1,15 @@
 __author__ = 'Hadar'
-
+"""
+##################################################################
+# Created By: Hadar Rabin                                        #
+# Date: 20/02/2016                                               #
+# Name: Get the desired information from the system              #
+# Version: 1.0                                                   #
+# Windows Tested Versions: Win 7 64-bit                          #
+# Python Tested Versions: 2.6 32-bit                             #
+# Python Environment  : PyCharm                                  #
+##################################################################
+"""
 from subprocess import Popen, PIPE
 import win32api #win32
 import win32pdh #win32

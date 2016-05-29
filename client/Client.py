@@ -1,4 +1,15 @@
 __author__ = 'Hadar'
+"""
+##################################################################
+# Created By:  Hadar Rabin                                       #
+# Date: 20/05/2016                                               #
+# Name: Client , connection between system and server            #
+# Version: 1.0                                                   #
+# Windows Tested Versions: Win 7 64-bit                          #
+# Python Tested Versions: 2.6 32-bit                             #
+# Python Environment  : PyCharm                                  #
+##################################################################
+"""
 import Config
 import socket, time
 import system
@@ -11,7 +22,7 @@ import pickle
 
 
 # region ----------   CONSTANTS   ---------------------------------------------------------------
-SERVER_ADDRESS = "127.0.0.1"  # The default target server ip
+SERVER_ADDRESS = Config.IP  # The default target server ip
 SERVER_PORT = 5070  # The default target server port
 LEN_UNIT_BUF = 2048  # Min len of buffer for recieve from server socket
 MAX_RSA_MSG = 128  # Maximum length of message encrypted in RSA module (pyCrypto limitation)

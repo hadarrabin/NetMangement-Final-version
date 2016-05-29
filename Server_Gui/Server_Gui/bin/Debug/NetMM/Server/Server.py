@@ -1,4 +1,15 @@
 __author__ = 'Hadar'
+"""
+##################################################################
+# Created By:  Hadar Rabin                                       #
+# Date: 20/05/2016                                               #
+# Name: Server  between GUI and clients                          #
+# Version: 1.0                                                   #
+# Windows Tested Versions: Win 7 64-bit                          #
+# Python Tested Versions: 2.6 32-bit                             #
+# Python Environment  : PyCharm                                  #
+##################################################################
+"""
 import socket
 from Crypto import *
 import threading
@@ -10,7 +21,6 @@ import struct
 import sqlite3
 import Aes
 from Rsa import *
-
 # region ----------   C O N S T A N T S  ------------------------------------------------------------------------------------------------
 PORT = 5070
 LEN_UNIT_BUF = 2048  # Min len of buffer for receive from server socket
